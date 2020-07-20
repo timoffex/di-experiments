@@ -1,0 +1,8 @@
+cradle:
+  stack:
+    - path: ./test
+      component: "di-experiments:test:di-experiments-test"
+    - path: ./src
+      component: "di-experiments:lib"
+    - path: ./app
+      component: "di-experiments:di-experiments-exe"
