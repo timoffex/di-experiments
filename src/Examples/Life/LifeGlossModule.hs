@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleContexts       #-}
 {-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE LambdaCase             #-}
 {-# LANGUAGE PartialTypeSignatures  #-}
 {-# LANGUAGE ScopedTypeVariables    #-}
 {-# LANGUAGE TemplateHaskell        #-}
@@ -44,8 +45,8 @@ initialSimulationState = SimulationState False
 -- This depends on the 'glossModule'. This installs a 'LifeGrid'
 -- component, an update hook that advances the 'LifeGrid', a render
 -- hook that draws the 'LifeGrid' with cells of size @cellScale@, and
--- (TODO) an event hook that allows editing the grid and pausing or
--- stopping the simulation.
+-- an event hook that allows editing the grid and pausing or stopping
+-- the simulation.
 lifeGlossModule :: _ => LifeGrid -> Float -> Module all ins _
 lifeGlossModule initialWorld cellScale =
   addWorldState initialWorld
@@ -72,7 +73,7 @@ onUpdate = execState $
 
 
 onEvent :: _ => Float -> Event -> HList xs -> HList xs
-onEvent cellSize evt = case evt of
+onEvent cellSize = \case
   EventKey (MouseButton LeftButton) Down _ mousePos -> execState $ do
     hlift @MouseState isLeftDown .= True
     vitalizeMouse cellSize mousePos

@@ -99,7 +99,7 @@ setAlive b pos prevLg =
 
     lgWithPosSet = prevLg & gridMap.at pos %~ \case
       -- Create new cell if one doesn't exist and b is True.
-      Nothing      ->
+      Nothing ->
         if b
           then Just (NeighborCount neighborCount, CellAlive True)
           else Nothing

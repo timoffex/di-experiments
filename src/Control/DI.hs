@@ -70,7 +70,10 @@ import           Data.HList
 --     -- Use hget or hget1 to extract dependencies. The compiler will infer
 --     -- the constraints to add.
 --     unMyAction $ hget deps
---     -- Pass deps directly to other injectable functions.
+--     -- Pass deps directly to other injectable functions. The constraints
+--     -- g places on deps will be propagated to f: in other words, the compiler
+--     -- figures out the transitive dependencies for you and lists them in
+--     -- f's type signature!
 --     g deps
 --
 --   -- Given a module "yourModule" that satisfies all of f's dependencies,
@@ -99,7 +102,8 @@ inject (Module m) f = f (m HEmpty)
 -- @
 --   -- Binds a value of type @m ()@ for some monad @m@, but since
 --   -- @m@ does not appear in the inputs or outputs of the expression,
---   -- a type for it cannot be determined.
+--   -- a type for it cannot be determined. This will faile to compile
+--   -- due to an "ambiguous type variable."
 --   (inject (bind (return ())) $
 --      const "I don't use all bindings")    :: String
 -- @
@@ -111,7 +115,8 @@ bind a = Module $ \ins -> HCons a ins
 --
 -- This should be used in infix notation. This is essentially @flip
 -- (.)@: more fundamental modules should appear before higher level
--- modules.
+-- modules (potential dependencies of a module should be installed on
+-- its left).
 install :: Module all ins x -> Module all x outs -> Module all ins outs
 install (Module f) (Module g) = Module (g . f)
 
