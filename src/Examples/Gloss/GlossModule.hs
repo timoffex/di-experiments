@@ -52,7 +52,7 @@ defaultViewTransform = ViewTransform (0, 0) (1, 1)
 
 -- | Installs the base bindings for using 'playGame'.
 --
--- This defines the initial world to be 'HEmpty'.
+-- The initial world has a 'ViewTransform' component.
 glossModule :: forall all ins w.
                ( w ~ World (FirstTagged World all)
                ) => Module all ins _

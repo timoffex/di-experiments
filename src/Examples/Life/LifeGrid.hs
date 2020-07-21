@@ -110,7 +110,7 @@ setAlive b pos prevLg =
           then Nothing
           else Just (NeighborCount nc, CellAlive b)
 
-    adjustNeighbor lg npos = lg & gridMap.at npos %~ if b
+    adjustNeighbor lg pos = lg & gridMap.at pos %~ if b
                                                       then incNeighbor
                                                       else decNeighbor
 
