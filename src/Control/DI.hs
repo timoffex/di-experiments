@@ -1,6 +1,6 @@
-{-# LANGUAGE DataKinds      #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE TypeOperators  #-}
+{-# LANGUAGE DataKinds     #-}
+{-# LANGUAGE PolyKinds     #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Control.DI
   (

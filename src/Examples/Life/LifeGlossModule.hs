@@ -70,20 +70,22 @@ onUpdate = execState $
   whenM (gets $ hget >>> view (isSimulating @SimulationState)) $
     modify $ hmap advance
 
+
+onEvent :: _ => Float -> Event -> HList xs -> HList xs
 onEvent cellSize evt = case evt of
   EventKey (MouseButton LeftButton) Down _ mousePos -> execState $ do
-    modify $ hmap $ set (isLeftDown @MouseState) True
+    hlift @MouseState isLeftDown .= True
     vitalizeMouse cellSize mousePos
 
   EventMotion mousePos -> execState $
-    whenM (gets $ hget >>> view (isLeftDown @MouseState)) $
+    whenM (use $ hlift @MouseState isLeftDown) $
       vitalizeMouse cellSize mousePos
 
   EventKey (MouseButton LeftButton) Up _ _ ->
-    hmap $ set (isLeftDown @MouseState) False
+    hlift @MouseState isLeftDown .~ False
 
   EventKey (SpecialKey KeySpace) Up _ _ ->
-    hmap $ over (isSimulating @SimulationState) not
+    hlift @SimulationState isSimulating %~ not
 
   _ -> id
 
@@ -93,4 +95,4 @@ vitalizeMouse cellSize (mx, my) = do
         (sx, sy) = viewTransform^.scaling
         wx = round $ (mx - tx) / (sx * cellSize)
         wy = round $ (my - ty) / (sy * cellSize)
-    modify $ hmap $ vitalize (wx, wy)
+    hlens %= vitalize (wx, wy)

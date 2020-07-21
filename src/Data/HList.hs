@@ -60,12 +60,13 @@ module Data.HList
   , hconcat
   , FirstTagged
   , Contains (hget), Contains1 (hget1)
-  , Replace0, CanReplace0 (hmap), CanReplace0'
-  , Replace1, CanReplace1 (hmap1), CanReplace1'
+  , Replace0, CanReplace0 (hmap), hlens, hlift, CanReplace0'
+  , Replace1, CanReplace1 (hmap1), hlens1, hlift1, CanReplace1'
   , type (++)
   ) where
 
 
+import           Control.Lens hiding (Contains)
 import           Data.Proxy
 import           GHC.TypeNats
 
@@ -249,6 +250,7 @@ instance {-# OVERLAPPABLE #-}
 
 -- | Replaces the first @a@ in @xs@ by @b@.
 type family Replace0 a b xs where
+  Replace0 a a xs = xs
   Replace0 a b (a ': xs) = b ': xs
   Replace0 a b (x ': xs) = x ': Replace0 a b xs
 
@@ -302,3 +304,32 @@ instance {-# OVERLAPPABLE #-}
          , Replace1 t b (x ': xs) ~ (x ': Replace1 t b xs)
          ) => CanReplace1 t a b (x ': xs) where
   hmap1 f (HCons x rest) = HCons x (hmap1 f rest)
+
+
+
+hlens :: forall a b xs.
+         CanReplace0 a b xs
+      => Lens (HList xs) (HList (Replace0 a b xs)) a b
+hlens = lens hget (\ls b -> hmap (\(a :: a) -> b) ls)
+
+hlens1 :: CanReplace1 t a b xs
+       => Lens (HList xs) (HList (Replace1 t b xs)) (t a) (t b)
+hlens1 = lens hget1 (\ls tb -> hmap1 (const tb) ls)
+
+
+
+hlift :: forall s t a b f xs.
+         ( Functor f
+         , CanReplace0 s t xs
+         )
+      => LensLike f s t a b
+      -> LensLike f (HList xs) (HList (Replace0 s t xs)) a b
+hlift l = hlens . l
+
+hlift1 :: forall tag s t a b f xs.
+          ( Functor f
+          , CanReplace1 tag s t xs
+          )
+       => LensLike f (tag s) (tag t) a b
+       -> LensLike f (HList xs) (HList (Replace1 tag t xs)) a b
+hlift1 l = hlens1 . l
