@@ -64,9 +64,9 @@ Consider this outline of a Haskell implementation of a game:
 ```haskell
 playGame :: w                  -- ^ Initial game state ("world").
          -> (Float -> w -> w)  -- ^ Update function.
-		 -> (Event -> w -> w)  -- ^ Event handler.
-		 -> (w -> Picture)     -- ^ Rendering function.
-		 -> IO ()
+         -> (Event -> w -> w)  -- ^ Event handler.
+         -> (w -> Picture)     -- ^ Rendering function.
+         -> IO ()
 
 
 initialLifeGrid :: LifeGrid
@@ -87,21 +87,21 @@ handlePanning :: Event -> MouseState -> Transform -> Transform
 main =
   playGame
     ( initialLifeGrid
-	, initialSimulationState
-	, initialMouseState
-	, initialTransform )
-	
-	(\dt (lg, ss, ms, tr) ->
-	  ( updateLifeGame lg, ss, ms, tr ))
+    , initialSimulationState
+    , initialMouseState
+    , initialTransform )
     
-	(\evt (lg, ss, ms, tr) ->
-	  let ms' = updateMouse evt ms
-	      ss' = updateSimulationState evt ss
-	      tr' = handlePanning evt ms tr
-		  lg' = handlePainting evt ms lg
-	  in (lg', ss', ms', tr'))
-	
-	(\(lg, ss, ms, tr) -> renderLifeGame lg)
+    (\dt (lg, ss, ms, tr) ->
+      ( updateLifeGame lg, ss, ms, tr ))
+    
+    (\evt (lg, ss, ms, tr) ->
+      let ms' = updateMouse evt ms
+          ss' = updateSimulationState evt ss
+          tr' = handlePanning evt ms tr
+          lg' = handlePainting evt ms lg
+      in (lg', ss', ms', tr'))
+    
+    (\(lg, ss, ms, tr) -> renderLifeGame lg)
 ```
 
 One can separate the functions and data definitions (omitted) into
