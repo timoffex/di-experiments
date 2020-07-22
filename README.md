@@ -236,11 +236,11 @@ mainModule
              Examples.Life.LifeGlossModule.MouseState, LifeGrid,
              Examples.Gloss.BasicViewControlsModule.MouseState, ViewTransform]]
        ins
-	   -- This is the same as above. It appears twice because of the
-	   -- definition of the 'Module' type and the 'inject' function.
-	   -- Without getting into technicalities, this makes it possible to
-	   -- declare hooks that act on the "total" state, which may be
-	   -- composed of bits of state defined in unknown modules.
+       -- This is the same as above. It appears twice because of the
+       -- definition of the 'Module' type and the 'inject' function.
+       -- Without getting into technicalities, this makes it possible to
+       -- declare hooks that act on the "total" state, which may be
+       -- composed of bits of state defined in unknown modules.
        (EventHook
           (World
              '[Examples.Life.LifeGlossModule.SimulationState,
@@ -262,3 +262,40 @@ mainModule
                 Examples.Gloss.BasicViewControlsModule.MouseState, ViewTransform]
           : ins)
 ```
+
+## Future work
+
+- Modules should be able to run in a monad. Define `ModuleM` like so:
+
+  ```
+  newtype ModuleM m all ins outs =
+    ModuleM (HList ins -> m (HList outs))
+  ```
+
+  This will allow modules to bind `IORef`s or do setup using
+  `IO`. Running in `IO` can be useful if a module should bind data
+  based on a static external resource. `IORef`s can be useful for
+  binding a service implementation that performs caching. In general,
+  it's a good idea to allow effects---Haskellers will find a reason to
+  use them.
+
+- The `CanReplace0` and `Contains` classes for `HList` should be
+  combined into one; same for `CanReplace1` and `Contains1`. They are
+  only separate because the `CanReplace` classes require some extra
+  type variables that feel clunky and repetitive. Ideally, one would
+  define the following typeclasses:
+
+  ```
+  class Contains s xs where
+    hlift :: Functor f
+          => LensLike f s t a b
+          -> LensLike f (HList xs) (HList (Replace0 a b xs)) a b
+
+  -- The "1" variants can help resolve type ambiguities.
+  class Contains1 r xs where
+    hlift1 :: Functor f
+           => LensLike f (r s) (r t) a b
+           -> LensLike f (HList xs) (HList (Replace1 t b xs)) a b
+  ```
+
+  I have not been able to define instances for those classes.
