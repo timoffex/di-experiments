@@ -51,18 +51,13 @@ basicViewControlsModule =
   `install` addEventHook' handleEvent
 
 
--- TODO: I need to write combinators to combine modify + hmap, get +
--- hget, etc. Otherwise, the code below takes a bit of Haskell
--- experience to parse.
-
-
 handleEvent :: _ => Event -> HList xs -> HList xs
 handleEvent evt = execState $ do
   -- Update button-down state.
   whenJust (evt ^? (_EventKey . aside1 _MouseButton)) $ \(button, ks, _, _) ->
     case button of
-      RightButton -> modify $ hmap $ set (isRightDown @MouseState) (ks == Down)
-      LeftButton  -> modify $ hmap $ set (isLeftDown  @MouseState) (ks == Down)
+      RightButton -> hlift @MouseState isRightDown .= (ks == Down)
+      LeftButton  -> hlift @MouseState isLeftDown  .= (ks == Down)
       _           -> return ()
 
   -- Handle mouse motion.
@@ -75,12 +70,12 @@ handleEvent evt = execState $ do
 
 handleMouseMoved :: _ => (Float, Float) -> StateT (HList xs) m ()
 handleMouseMoved (nx, ny) = do
-  (lx, ly) <- gets (hget >>> view (lastXY @MouseState))
+  (lx, ly) <- use (hlift @MouseState lastXY)
 
   let dx = lx - nx
       dy = ly - ny
 
-  whenM (gets $ hget >>> view (isRightDown @MouseState)) $
-    modify $ hmap $ over (translation @ViewTransform) (subtract dx *** subtract dy)
+  whenM (use (hlift @MouseState isRightDown)) $
+    hlift @ViewTransform translation %= (subtract dx *** subtract dy)
 
-  modify $ hmap $ set (lastXY @MouseState) (nx, ny)
+  hlift @MouseState lastXY .= (nx, ny)
