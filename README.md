@@ -97,8 +97,8 @@ main =
     (\evt (lg, ss, ms, tr) ->
       let ms' = updateMouse evt ms
           ss' = updateSimulationState evt ss
-          tr' = handlePanning evt ms tr
-          lg' = handlePainting evt ms lg
+          tr' = handlePanning evt ms' tr'
+          lg' = handlePainting evt ms' lg
       in (lg', ss', ms', tr'))
     
     (\(lg, ss, ms, tr) -> renderLifeGame lg)
