@@ -26,18 +26,24 @@ module Examples.Life.LifeGrid
   , neighbors
   ) where
 
+import           Control.DeepSeq     (NFData)
 import           Control.Lens
 import           Control.Monad
 import qualified Data.HashMap.Strict as M
 import           Data.Maybe
 
 
-newtype NeighborCount = NeighborCount { _neighborCountValue :: Int }
-newtype CellAlive = CellAlive { _cellAliveValue :: Bool }
+newtype NeighborCount = NeighborCount
+  { _neighborCountValue :: Int
+  } deriving (NFData)
+newtype CellAlive =CellAlive
+  { _cellAliveValue :: Bool
+  } deriving (NFData)
 
 type Cell = (NeighborCount, CellAlive)
 newtype LifeGrid = LifeGrid
-  { _lifeGridGridMap :: M.HashMap (Int, Int) Cell }
+  { _lifeGridGridMap :: M.HashMap (Int, Int) Cell
+  } deriving (NFData)
 
 $( makeFields ''NeighborCount )
 $( makeFields ''CellAlive )

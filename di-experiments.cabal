@@ -4,16 +4,16 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c8cd647cd91d3db7bb56503251d48c1314fca826a8fd6497f6e8371152f7635a
+-- hash: d6baedd44f45d7f400369811900e3b3f5b2b276730d3af73cce3717cb5e9e8ae
 
 name:           di-experiments
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/di-experiments#readme>
-homepage:       https://github.com/githubuser/di-experiments#readme
-bug-reports:    https://github.com/githubuser/di-experiments/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2020 Author name here
+description:    Please see the README on GitHub at <https://github.com/timoffex/di-experiments#readme>
+homepage:       https://github.com/timoffex/di-experiments#readme
+bug-reports:    https://github.com/timoffex/di-experiments/issues
+author:         Timofey Peshin
+maintainer:     timoffex@gmail.com
+copyright:      2020 Timofey Peshin
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -23,7 +23,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/di-experiments
+  location: https://github.com/timoffex/di-experiments
 
 library
   exposed-modules:
@@ -42,6 +42,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , deepseq
     , extra
     , gloss
     , lens
@@ -58,6 +59,7 @@ executable di-experiments-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , deepseq
     , di-experiments
     , extra
     , gloss
@@ -76,6 +78,28 @@ test-suite di-experiments-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , deepseq
+    , di-experiments
+    , extra
+    , gloss
+    , lens
+    , mtl
+    , unordered-containers
+  default-language: Haskell2010
+
+benchmark di-experiments-bench
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      Bench.Examples.Life
+      Paths_di_experiments
+  hs-source-dirs:
+      bench
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -O2
+  build-depends:
+      base >=4.7 && <5
+    , criterion
+    , deepseq
     , di-experiments
     , extra
     , gloss

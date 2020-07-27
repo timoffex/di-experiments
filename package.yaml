@@ -21,6 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/timo
 
 dependencies:
 - base >= 4.7 && < 5
+- deepseq
 - unordered-containers
 - gloss
 - lens
@@ -51,3 +52,16 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - di-experiments
+
+benchmarks:
+  di-experiments-bench:
+    main:                Main.hs
+    source-dirs:         bench
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -O2
+    dependencies:
+    - di-experiments
+    - criterion

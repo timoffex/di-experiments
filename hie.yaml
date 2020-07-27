@@ -6,3 +6,5 @@ cradle:
       component: "di-experiments:lib"
     - path: ./app
       component: "di-experiments:di-experiments-exe"
+    - path: ./bench
+      component: "di-experiments:di-experiments-bench"
