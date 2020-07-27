@@ -1,5 +1,5 @@
--- My IDE fails to work on this file because the types are too
--- complicated.
+-- My IDE once or twice failed to work on this file, presumably
+-- because the types are too complicated. Other times, it works OK.
 
 module Main where
 
