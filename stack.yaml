@@ -1,7 +1,7 @@
 resolver: lts-16.5
 
 packages:
-- .
+- hlist-attempt
 
 ghc-options:
   # Disable partial type signature warnings because partial type
